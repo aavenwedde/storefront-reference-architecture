@@ -1,0 +1,41 @@
+<script>
+alert('x');  
+addToWishlist: function () {
+        $('.add-to-wish-list').on('click', function (e) {
+            e.preventDefault();
+            var url = $(this).data('href');
+            var button = $(this);
+            var pid = $(this).closest('.product-detail').find('.product-id').html();
+            var optionId = $(this).closest('.product-detail').find('.product-option').attr('data-option-id');
+            var optionVal = $(this).closest('.product-detail').find('.options-select option:selected').attr('data-value-id');
+            optionId = optionId || null;
+            optionVal = optionVal || null;
+            if (!url || !pid) {
+                return;
+            }
+
+            $.spinner().start();
+            $(this).attr('disabled', true);
+            $.ajax({
+                url: url,
+                type: 'post',
+                dataType: 'json',
+                data: {
+                    pid: pid,
+                    optionId: optionId,
+                    optionVal: optionVal
+                },
+                success: function (data) {
+                    displayMessage(data, button);
+                },
+                error: function (err) {
+                    displayMessage(err, button);
+                }
+            });
+        });
+    }
+
+</script>
+<button type="submit" class="btn btn-block btn-outline-primary add-to-wish-list" data-href="${URLUtils.url('Wishlist-AddProduct')}">
+    <i class="fa fa-heart"></i> <span>${Resource.msg('button.add_to_wishlist.txt', 'wishlist', null)}</span>
+</button> 
